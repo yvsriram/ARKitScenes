@@ -7,12 +7,12 @@ import os
 ARkitscense_url = 'https://docs-assets.developer.apple.com/ml-research/datasets/arkitscenes/v1'
 TRAINING = 'Training'
 VALIDATION = 'Validation'
-HIGRES_DEPTH_ASSET_NAME = 'highres_depth'
+HIGRES_ASSET_NAMES = ['highres_depth', 'wide', 'wide_intrinsics']
 POINT_CLOUDS_FOLDER = 'laser_scanner_point_clouds'
 
 default_raw_dataset_assets = ['mov', 'annotation', 'mesh', 'confidence', 'highres_depth', 'lowres_depth',
                  'lowres_wide.traj', 'lowres_wide', 'lowres_wide_intrinsics', 'ultrawide',
-                 'ultrawide_intrinsics', 'vga_wide', 'vga_wide_intrinsics']
+                 'ultrawide_intrinsics', 'vga_wide', 'vga_wide_intrinsics', 'wide', 'wide_intrinsics']
 
 missing_3dod_assets_video_ids = ['47334522', '47334523', '42897421', '45261582', '47333152', '47333155',
                                  '48458535', '48018733', '47429677', '48458541', '42897848', '47895482',
@@ -23,14 +23,14 @@ missing_3dod_assets_video_ids = ['47334522', '47334523', '42897421', '45261582',
 def raw_files(video_id, assets, metadata):
     file_names = []
     for asset in assets:
-        if HIGRES_DEPTH_ASSET_NAME == asset:
+        if asset in HIGRES_ASSET_NAMES:
             in_upsampling = metadata.loc[metadata['video_id'] == float(video_id), ['is_in_upsampling']].iat[0, 0]
             if not in_upsampling:
                 print(f"Skipping asset {asset} for video_id {video_id} - Video not in upsampling dataset")
                 continue  # highres_depth asset only available for video ids from upsampling dataset
 
         if asset in ['confidence', 'highres_depth', 'lowres_depth', 'lowres_wide', 'lowres_wide_intrinsics',
-                     'ultrawide', 'ultrawide_intrinsics', 'vga_wide', 'vga_wide_intrinsics']:
+                     'ultrawide', 'ultrawide_intrinsics', 'vga_wide', 'vga_wide_intrinsics', 'wide', 'wide_intrinsics']:
             file_names.append(asset + '.zip')
         elif asset == 'mov':
             file_names.append(f'{video_id}.mov')
